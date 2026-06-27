@@ -4,7 +4,12 @@
       "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm --no-turbopack)",
       "Bash(npm install *)",
       "Bash(npx tsc *)",
-      "Bash(npx next *)"
+      "Bash(npx next *)",
+      "Bash(npx prisma *)",
+      "Bash(npx vitest *)",
+      "Bash(echo \"---EXIT---$?\")",
+      "PowerShell(winget install *)",
+      "PowerShell(Get-Service *)"
     ]
   }
 }
