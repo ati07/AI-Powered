@@ -1,0 +1,52 @@
+// ──────────────────────────────────────────────────
+// Prisma Schema — PostgreSQL
+// ──────────────────────────────────────────────────
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = []
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ──────────────────────────────────────────────────
+// User
+// ──────────────────────────────────────────────────
+model User {
+  id        String   @id @default(uuid())
+  clerkId   String   @unique
+  email     String   @unique
+  firstName String?
+  lastName  String?
+  imageUrl  String?
+
+  role     UserRole @default(USER)
+  isActive Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([clerkId])
+  @@index([email])
+  @@index([role])
+  @@map("users")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+// ─── Add more models below as your domain grows ───
+
+// model Organization {
+//   id        String   @id @default(uuid())
+//   name      String
+//   slug      String   @unique
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+//   @@map("organizations")
+// }
