@@ -233,3 +233,14 @@ These are intentionally out of scope for MVP:
 * Notification
 * API Key
 * Audit Log
+
+
+## Future Models
+
+Website
+│
+├── Scan
+│   ├── Page
+│   ├── Issue
+│   ├── Recommendation
+│   └── AIVisibilityScore

@@ -3,7 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { PrismaOrganizationRepository } from "@/infrastructure/db/repositories/prisma-organization.repository";
 import { CreateOrganizationUseCase } from "@/application/organization/use-cases/create-organization.use-case";
 import { GetOrganizationsUseCase } from "@/application/organization/use-cases/get-organizations.use-case";
-import { UnauthorizedError, AppError } from "@/application/common/errors";
+import { AppError } from "@/application/common/errors";
 import { resolveInternalUserId } from "@/infrastructure/auth/clerk/resolve-user";
 
 const orgRepo = new PrismaOrganizationRepository();

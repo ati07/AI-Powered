@@ -1,19 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { PrismaOrganizationRepository } from "@/infrastructure/db/repositories/prisma-organization.repository";
-import { UpdateOrganizationUseCase } from "@/application/organization/use-cases/update-organization.use-case";
-import { DeleteOrganizationUseCase } from "@/application/organization/use-cases/delete-organization.use-case";
+import { PrismaWebsiteRepository } from "@/infrastructure/db/repositories/prisma-website.repository";
+import { UpdateWebsiteUseCase } from "@/application/website/use-cases/update-website.use-case";
+import { DeleteWebsiteUseCase } from "@/application/website/use-cases/delete-website.use-case";
 import { AppError } from "@/application/common/errors";
 import { resolveInternalUserId } from "@/infrastructure/auth/clerk/resolve-user";
 
 const orgRepo = new PrismaOrganizationRepository();
+const websiteRepo = new PrismaWebsiteRepository();
 
 /**
- * PATCH /api/organizations/[id]
+ * PATCH /api/websites/[id]
  *
- * Renames an organization. Requires ADMIN or OWNER role.
+ * Updates a website's name and/or domain.
+ * Requires ADMIN or OWNER role in the owning organization.
  *
- * Body: { name: string }
+ * Body: { name?: string, domain?: string }
  */
 export async function PATCH(
   request: NextRequest,
@@ -26,29 +29,31 @@ export async function PATCH(
     }
 
     const internalUserId = await resolveInternalUserId(clerkUserId);
-
     const { id } = await params;
-    const body = (await request.json()) as { name?: string };
+    const body = (await request.json()) as { name?: string; domain?: string };
 
-    const useCase = new UpdateOrganizationUseCase(orgRepo);
+    const useCase = new UpdateWebsiteUseCase(websiteRepo, orgRepo);
     const result = await useCase.execute({
       id,
-      name: body.name ?? "",
+      name: body.name,
+      domain: body.domain,
       userId: internalUserId,
     });
 
-    const org = result.organization;
+    const website = result.website;
 
     return NextResponse.json({
       data: {
-        id: org.id,
-        name: org.name,
-        slug: org.slug,
-        logoUrl: org.logoUrl,
-        description: org.description,
-        timezone: org.timezone,
-        createdAt: org.createdAt.toISOString(),
-        updatedAt: org.updatedAt.toISOString(),
+        id: website.id,
+        organizationId: website.organizationId,
+        name: website.name,
+        domain: website.domain.toString(),
+        normalizedDomain: website.normalizedDomain,
+        faviconUrl: website.faviconUrl,
+        verified: website.verified,
+        lastScanAt: website.lastScanAt?.toISOString() ?? null,
+        createdAt: website.createdAt.toISOString(),
+        updatedAt: website.updatedAt.toISOString(),
       },
     });
   } catch (error) {
@@ -57,10 +62,10 @@ export async function PATCH(
 }
 
 /**
- * DELETE /api/organizations/[id]
+ * DELETE /api/websites/[id]
  *
- * Deletes an organization. Requires OWNER role.
- * Cascade-deletes all associated memberships.
+ * Deletes a website from its organization.
+ * Requires ADMIN or OWNER role in the owning organization.
  */
 export async function DELETE(
   _request: NextRequest,
@@ -73,10 +78,9 @@ export async function DELETE(
     }
 
     const internalUserId = await resolveInternalUserId(clerkUserId);
-
     const { id } = await params;
 
-    const useCase = new DeleteOrganizationUseCase(orgRepo);
+    const useCase = new DeleteWebsiteUseCase(websiteRepo, orgRepo);
     await useCase.execute({ id, userId: internalUserId });
 
     return NextResponse.json({ data: { success: true } });

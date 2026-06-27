@@ -1,9 +1,11 @@
 "use client";
 
 import type { OrganizationDTO } from "@/features/organizations/schemas/organization-schema";
+import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Building2, Globe } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Building2, Globe, ExternalLink } from "lucide-react";
 
 interface OrganizationListProps {
   organizations: OrganizationDTO[];
@@ -50,8 +52,17 @@ export function OrganizationList({ organizations, actions }: OrganizationListPro
             </div>
             {actions && <div className="flex gap-1">{actions(org)}</div>}
           </CardHeader>
-          <CardContent className="mt-auto flex items-center gap-2 pt-4">
+          <CardContent className="mt-auto flex flex-wrap items-center gap-2 pt-4">
             <Badge variant="secondary">{org.timezone}</Badge>
+            <Link
+              href={`/dashboard/organizations/${org.id}/websites`}
+              className="ml-auto"
+            >
+              <Button variant="outline" size="sm">
+                <ExternalLink className="mr-1 h-3 w-3" />
+                Websites
+              </Button>
+            </Link>
           </CardContent>
         </Card>
       ))}

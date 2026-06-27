@@ -57,6 +57,7 @@ model Organization {
   updatedAt DateTime @updatedAt
 
   memberships Membership[]
+  websites    Website[]
 
   @@index([slug])
   @@map("organizations")
@@ -88,4 +89,65 @@ model Membership {
   @@index([userId])
   @@index([organizationId])
   @@map("memberships")
+}
+
+// ──────────────────────────────────────────────────
+// Website
+// ──────────────────────────────────────────────────
+
+model Website {
+  id               String    @id @default(uuid())
+  organizationId   String
+  name             String
+  domain           String
+  normalizedDomain String
+  faviconUrl       String?
+  verified         Boolean   @default(false)
+  lastScanAt       DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  scans       Scan[]
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, normalizedDomain])
+  @@index([organizationId])
+  @@map("websites")
+}
+
+// ──────────────────────────────────────────────────
+// Scan
+// ──────────────────────────────────────────────────
+
+enum ScanStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+model Scan {
+  id        String     @id @default(uuid())
+  websiteId String
+
+  website Website @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+
+  status ScanStatus @default(PENDING)
+
+  startedAt  DateTime?
+  finishedAt DateTime?
+
+  pagesFound   Int @default(0)
+  pagesCrawled Int @default(0)
+
+  error String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([websiteId])
+  @@index([status])
+  @@map("scans")
 }

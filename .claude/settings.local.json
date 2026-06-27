@@ -9,7 +9,10 @@
       "Bash(npx vitest *)",
       "Bash(echo \"---EXIT---$?\")",
       "PowerShell(winget install *)",
-      "PowerShell(Get-Service *)"
+      "PowerShell(Get-Service *)",
+      "PowerShell(New-Item *)",
+      "Bash(Get-ChildItem \"D:\\\\Projects\\\\AI-powered operations platform\\\\src\\\\app\\\\\\(dashboard\\)\\\\dashboard\\\\organizations\" -Directory)",
+      "Bash(Select-Object Name)"
     ]
   }
 }

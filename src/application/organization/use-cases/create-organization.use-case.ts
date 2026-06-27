@@ -4,8 +4,6 @@ import { type IOrganizationRepository } from "@/domain/repositories/organization
 import { Slug } from "@/domain/value-objects/slug";
 import { ConflictError } from "@/application/common/errors";
 import { CreateOrganizationInputSchema, type CreateOrganizationInput } from "@/application/organization/organization.schema";
-import { ZodError } from "zod";
-
 export interface CreateOrganizationResult {
   organization: OrganizationEntity;
 }
