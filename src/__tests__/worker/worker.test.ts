@@ -41,6 +41,7 @@ function makePendingScan(): ScanEntity {
     finishedAt: null,
     pagesFound: 0,
     pagesCrawled: 0,
+    pagesFailed: 0,
     error: null,
     createdAt: new Date(),
     updatedAt: new Date(),

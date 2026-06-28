@@ -148,3 +148,22 @@ Then implement the repository in `src/infrastructure/db/repositories/`.
 
 **Prisma client not found**
 → Run `npx prisma generate` after any schema change.
+
+
+Authentication
+      │
+Organizations
+      │
+Websites
+      │
+Scans
+      │
+Background Worker
+      │
+Crawler
+      │
+SEO Engine
+      │
+AI Visibility Engine
+      │
+Dashboard

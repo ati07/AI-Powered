@@ -31,7 +31,15 @@ export interface ScanEntityProps {
   finishedAt: Date | null;
   pagesFound: number;
   pagesCrawled: number;
+  pagesFailed: number;
   error: string | null;
+
+  /** Scan summary — AI Visibility Score statistics. */
+  averageScore: number | null;
+  highestScore: number | null;
+  lowestScore: number | null;
+  pagesScored: number | null;
+
   createdAt: Date;
   updatedAt: Date;
 }
@@ -42,6 +50,10 @@ export class ScanEntity {
   constructor(props: CreateScanEntityInput) {
     this.props = {
       ...props,
+      averageScore: props.averageScore ?? null,
+      highestScore: props.highestScore ?? null,
+      lowestScore: props.lowestScore ?? null,
+      pagesScored: props.pagesScored ?? null,
       createdAt: props.createdAt ?? new Date(),
       updatedAt: props.updatedAt ?? new Date(),
     };
@@ -77,8 +89,28 @@ export class ScanEntity {
     return this.props.pagesCrawled;
   }
 
+  get pagesFailed(): number {
+    return this.props.pagesFailed;
+  }
+
   get error(): string | null {
     return this.props.error;
+  }
+
+  get averageScore(): number | null {
+    return this.props.averageScore;
+  }
+
+  get highestScore(): number | null {
+    return this.props.highestScore;
+  }
+
+  get lowestScore(): number | null {
+    return this.props.lowestScore;
+  }
+
+  get pagesScored(): number | null {
+    return this.props.pagesScored;
   }
 
   get createdAt(): Date {
@@ -195,8 +227,12 @@ export class InvalidScanTransitionError extends Error {
 
 export type CreateScanEntityInput = Omit<
   ScanEntityProps,
-  "createdAt" | "updatedAt"
+  "createdAt" | "updatedAt" | "averageScore" | "highestScore" | "lowestScore" | "pagesScored"
 > & {
   createdAt?: Date;
   updatedAt?: Date;
+  averageScore?: number | null;
+  highestScore?: number | null;
+  lowestScore?: number | null;
+  pagesScored?: number | null;
 };

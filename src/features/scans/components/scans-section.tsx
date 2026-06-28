@@ -11,6 +11,8 @@ interface ScansSectionProps {
   websiteId: string;
   /** Whether the user can start scans (OWNER or ADMIN). */
   canManage: boolean;
+  /** Organization ID — used for scan dashboard links. */
+  organizationId?: string;
 }
 
 /**
@@ -21,7 +23,7 @@ interface ScansSectionProps {
  * - Error banner
  * - Scan history list
  */
-export function ScansSection({ websiteId, canManage }: ScansSectionProps) {
+export function ScansSection({ websiteId, canManage, organizationId }: ScansSectionProps) {
   const {
     scans,
     isLoading,
@@ -68,7 +70,7 @@ export function ScansSection({ websiteId, canManage }: ScansSectionProps) {
       )}
 
       {/* Scan history */}
-      <ScanHistory scans={scans} isLoading={isLoading} />
+      <ScanHistory scans={scans} isLoading={isLoading} organizationId={organizationId} websiteId={websiteId} />
     </div>
   );
 }

@@ -162,6 +162,7 @@ describe("CreateScanUseCase", () => {
         finishedAt: null,
         pagesFound: 5,
         pagesCrawled: 2,
+        pagesFailed: 0,
         error: null,
         createdAt: new Date(),
         updatedAt: new Date(),

@@ -32,7 +32,12 @@ function toDomain(dbScan: {
   finishedAt: Date | null;
   pagesFound: number;
   pagesCrawled: number;
+  pagesFailed: number;
   error: string | null;
+  averageScore: number | null;
+  highestScore: number | null;
+  lowestScore: number | null;
+  pagesScored: number | null;
   createdAt: Date;
   updatedAt: Date;
 }): ScanEntity {
@@ -44,7 +49,12 @@ function toDomain(dbScan: {
     finishedAt: dbScan.finishedAt,
     pagesFound: dbScan.pagesFound,
     pagesCrawled: dbScan.pagesCrawled,
+    pagesFailed: dbScan.pagesFailed,
     error: dbScan.error,
+    averageScore: dbScan.averageScore,
+    highestScore: dbScan.highestScore,
+    lowestScore: dbScan.lowestScore,
+    pagesScored: dbScan.pagesScored,
     createdAt: dbScan.createdAt,
     updatedAt: dbScan.updatedAt,
   };
@@ -64,6 +74,7 @@ export class PrismaScanRepository implements IScanRepository {
         finishedAt: input.scan.finishedAt,
         pagesFound: input.scan.pagesFound,
         pagesCrawled: input.scan.pagesCrawled,
+        pagesFailed: input.scan.pagesFailed,
         error: input.scan.error,
         createdAt: input.scan.createdAt,
         updatedAt: input.scan.updatedAt,
@@ -81,7 +92,12 @@ export class PrismaScanRepository implements IScanRepository {
     if (input.finishedAt !== undefined) data.finishedAt = input.finishedAt;
     if (input.pagesFound !== undefined) data.pagesFound = input.pagesFound;
     if (input.pagesCrawled !== undefined) data.pagesCrawled = input.pagesCrawled;
+    if (input.pagesFailed !== undefined) data.pagesFailed = input.pagesFailed;
     if (input.error !== undefined) data.error = input.error;
+    if (input.averageScore !== undefined) data.averageScore = input.averageScore;
+    if (input.highestScore !== undefined) data.highestScore = input.highestScore;
+    if (input.lowestScore !== undefined) data.lowestScore = input.lowestScore;
+    if (input.pagesScored !== undefined) data.pagesScored = input.pagesScored;
     if (input.updatedAt !== undefined) data.updatedAt = input.updatedAt;
 
     try {
@@ -155,14 +171,18 @@ export class PrismaScanRepository implements IScanRepository {
     id: string;
     pagesFound: number;
     pagesCrawled: number;
+    pagesFailed?: number;
   }): Promise<void> {
     try {
+      const data: Record<string, unknown> = {
+        pagesFound: input.pagesFound,
+        pagesCrawled: input.pagesCrawled,
+      };
+      if (input.pagesFailed !== undefined) data.pagesFailed = input.pagesFailed;
+
       await prisma.scan.update({
         where: { id: input.id },
-        data: {
-          pagesFound: input.pagesFound,
-          pagesCrawled: input.pagesCrawled,
-        },
+        data,
       });
     } catch {
       throw new NotFoundError("Scan", input.id);

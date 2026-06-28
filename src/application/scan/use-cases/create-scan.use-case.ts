@@ -84,6 +84,7 @@ export class CreateScanUseCase {
       finishedAt: null,
       pagesFound: 0,
       pagesCrawled: 0,
+      pagesFailed: 0,
       error: null,
       createdAt: now,
       updatedAt: now,

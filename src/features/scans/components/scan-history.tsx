@@ -10,11 +10,16 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollText, RefreshCw, FileSearch } from "lucide-react";
+import Link from "next/link";
 
 interface ScanHistoryProps {
   scans: ScanDTO[];
   /** Whether the scan list is currently loading. */
   isLoading: boolean;
+  /** Organization ID — used for navigation links. */
+  organizationId?: string;
+  /** Website ID — used for navigation links. */
+  websiteId?: string;
 }
 
 /**
@@ -27,12 +32,14 @@ interface ScanHistoryProps {
  * - Duration
  * - Error message (if failed)
  *
+ * Completed scans link to the scan dashboard.
+ *
  * States:
  * - Loading: spinner
  * - Empty: centered empty-state message
  * - Loaded: scrollable list
  */
-export function ScanHistory({ scans, isLoading }: ScanHistoryProps) {
+export function ScanHistory({ scans, isLoading, organizationId, websiteId }: ScanHistoryProps) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center rounded-lg border p-8">
@@ -63,18 +70,20 @@ export function ScanHistory({ scans, isLoading }: ScanHistoryProps) {
       </h4>
       <div className="space-y-2">
         {scans.map((scan) => (
-          <ScanHistoryItem key={scan.id} scan={scan} />
+          <ScanHistoryItem key={scan.id} scan={scan} organizationId={organizationId} websiteId={websiteId} />
         ))}
       </div>
     </div>
   );
 }
 
-function ScanHistoryItem({ scan }: { scan: ScanDTO }) {
+function ScanHistoryItem({ scan, organizationId, websiteId }: { scan: ScanDTO; organizationId?: string; websiteId?: string }) {
   const duration = getDuration(scan.startedAt, scan.finishedAt);
+  const isCompleted = scan.status === "COMPLETED";
+  const canLink = isCompleted && organizationId && websiteId;
 
-  return (
-    <Card className="flex flex-col">
+  const card = (
+    <Card className={`flex flex-col ${canLink ? "hover:border-primary/50 cursor-pointer transition-colors" : ""}`}>
       <CardHeader className="flex flex-row items-center justify-between py-3">
         <div className="flex items-center gap-2">
           <ScrollText className="h-4 w-4 text-muted-foreground" />
@@ -116,6 +125,19 @@ function ScanHistoryItem({ scan }: { scan: ScanDTO }) {
       </CardContent>
     </Card>
   );
+
+  if (canLink) {
+    return (
+      <Link
+        href={`/dashboard/organizations/${organizationId}/websites/${websiteId}/scans/${scan.id}`}
+        className="block"
+      >
+        {card}
+      </Link>
+    );
+  }
+
+  return card;
 }
 
 function getDuration(

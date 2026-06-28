@@ -25,7 +25,15 @@ export interface ScanDTO {
   finishedAt: string | null;
   pagesFound: number;
   pagesCrawled: number;
+  pagesFailed: number;
   error: string | null;
+
+  /** AI Visibility Score summary. */
+  averageScore: number | null;
+  highestScore: number | null;
+  lowestScore: number | null;
+  pagesScored: number | null;
+
   createdAt: string;
   updatedAt: string;
 }

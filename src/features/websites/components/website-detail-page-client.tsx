@@ -167,7 +167,7 @@ export function WebsiteDetailPageClient({
         </Card>
 
         {/* Scan section */}
-        <ScansSection websiteId={websiteId} canManage={canManage} />
+        <ScansSection websiteId={websiteId} canManage={canManage} organizationId={organizationId} />
       </PageContainer>
     </DashboardLayout>
   );

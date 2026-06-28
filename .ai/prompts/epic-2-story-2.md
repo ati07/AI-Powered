@@ -310,3 +310,6 @@ Before finishing:
 * Verify the project builds successfully.
 
 Do not leave TODO comments or placeholder implementations.
+
+
+If you identify architectural improvements that maintain backward compatibility and improve long-term maintainability, implement them and explain your reasoning in the final summary. Do not introduce breaking changes or unnecessary complexity.

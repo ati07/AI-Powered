@@ -23,7 +23,15 @@ export interface UpdateScanInput {
   finishedAt?: Date | null;
   pagesFound?: number;
   pagesCrawled?: number;
+  pagesFailed?: number;
   error?: string | null;
+
+  /** Scan summary — AI Visibility Score statistics. */
+  averageScore?: number | null;
+  highestScore?: number | null;
+  lowestScore?: number | null;
+  pagesScored?: number | null;
+
   updatedAt?: Date;
 }
 
@@ -54,5 +62,6 @@ export interface IScanRepository {
     id: string;
     pagesFound: number;
     pagesCrawled: number;
+    pagesFailed?: number;
   }): Promise<void>;
 }

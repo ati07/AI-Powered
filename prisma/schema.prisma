@@ -133,6 +133,8 @@ model Scan {
   websiteId String
 
   website Website @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+  pages   Page[]
+  pageScores PageScore[]
 
   status ScanStatus @default(PENDING)
 
@@ -141,8 +143,15 @@ model Scan {
 
   pagesFound   Int @default(0)
   pagesCrawled Int @default(0)
+  pagesFailed  Int @default(0)
 
   error String?
+
+  // Scan summary — AI Visibility Score statistics.
+  averageScore Float?
+  highestScore Float?
+  lowestScore  Float?
+  pagesScored  Int?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -150,4 +159,90 @@ model Scan {
   @@index([websiteId])
   @@index([status])
   @@map("scans")
+}
+
+// ──────────────────────────────────────────────────
+// Page
+// ──────────────────────────────────────────────────
+
+model Page {
+  id        String   @id @default(uuid())
+  scanId    String
+  scan      Scan     @relation(fields: [scanId], references: [id], onDelete: Cascade)
+
+  // General
+  url         String
+  finalUrl    String
+  statusCode  Int
+  contentType String
+
+  // SEO
+  title           String?
+  metaDescription String?
+  canonical       String?
+  robots          String?
+
+  // Social
+  openGraph Json?
+  twitter   Json?
+
+  // Structure
+  language String?
+  charset  String?
+  viewport String?
+
+  // Collections
+  headings       Json?
+  images         Json?
+  links          Json?
+  structuredData Json?
+
+  // Metadata
+  crawlDepth          Int
+  parentUrl           String?
+  source              String
+  warnings            Json?
+  downloadDurationMs  Int
+  extractionDurationMs Int
+
+  createdAt DateTime @default(now())
+
+  pageScore PageScore?
+
+  @@index([scanId])
+  @@index([url])
+  @@index([statusCode])
+  @@map("pages")
+}
+
+// ──────────────────────────────────────────────────
+// PageScore
+// ──────────────────────────────────────────────────
+
+model PageScore {
+  id        String   @id @default(uuid())
+  pageId    String   @unique
+  scanId    String
+
+  page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  scan Scan @relation(fields: [scanId], references: [id], onDelete: Cascade)
+
+  /** Overall AI Visibility Score (0–100). */
+  overallScore Int
+
+  /** Per-category scoring breakdown (JSON). */
+  categoryScores Json
+
+  /** Deductions applied during scoring (JSON). */
+  deductions Json
+
+  /** Generated recommendations (JSON). */
+  recommendations Json
+
+  /** When the score was computed. */
+  scoredAt DateTime @default(now())
+
+  @@index([scanId])
+  @@index([pageId])
+  @@map("page_scores")
 }

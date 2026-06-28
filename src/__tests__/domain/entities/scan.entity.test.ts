@@ -17,6 +17,7 @@ function makeScan(
     finishedAt: null,
     pagesFound: 0,
     pagesCrawled: 0,
+    pagesFailed: 0,
     error: null,
     ...overrides,
   };
